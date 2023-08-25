@@ -1,49 +1,62 @@
-class FlightTable:
-    def init(self):
-        self.data = []
+class Process:
+    def _init_(self, p_id, process_name, start_time, priority):
+        self.p_id = p_id
+        self.process_name = process_name
+        self.start_time = start_time
+        self.priority = priority
 
-    def add_entry(self, p_id, process, start_time, priority):
-        self.data.append({'P_ID': p_id, 'Process': process, 'Start Time': start_time, 'Priority': priority})
+    def display(self):
+        print(f"{self.p_id}\t{self.process_name}\t{self.start_time}\t{self.priority}")
 
-    def bubble_sort(self, key):
-        n = len(self.data)
-        for i in range(n - 1):
-            for j in range(0, n - i - 1):
-                if self.data[j][key] > self.data[j + 1][key]:
-                    self.data[j], self.data[j + 1] = self.data[j + 1], self.data[j]
+class ProcessTable:
+    def _init_(self):
+        self.processes = []
 
-    def print_table(self):
-        print("{:<5} {:<10} {:<15} {:<10}".format("P_ID", "Process", "Start Time", "Priority"))
-        print("="*40)
-        for entry in self.data:
-            print("{:<5} {:<10} {:<15} {:<10}".format(entry['P_ID'], entry['Process'], entry['Start Time'], entry['Priority']))
+    def add_process(self, process):
+        self.processes.append(process)
 
-flight_table = FlightTable()
-flight_table.add_entry("P1", "VSCode", 100, "MID")
-flight_table.add_entry("P23", "Eclipse", 234, "MID")
-flight_table.add_entry("P93", "Chrome", 189, "High")
-flight_table.add_entry("P42", "JDK", 9, "High")
-flight_table.add_entry("P9", "CMD", 7, "High")
-flight_table.add_entry("P87", "NotePad", 23, "Low")
+    def sort_by_p_id(self):
+        self.processes.sort(key=lambda process: process.p_id)
 
-while True:
-    print("\nSorting Options:")
+    def sort_by_start_time(self):
+        self.processes.sort(key=lambda process: process.start_time)
+
+    def sort_by_priority(self):
+        self.processes.sort(key=lambda process: process.priority, reverse=True)
+
+    def display_table(self):
+        for process in self.processes:
+            process.display()
+
+def main():
+    process_table = ProcessTable()
+
+    # Sample data
+    process_table.add_process(Process("P1", "VSCode", 100, "MID"))
+    process_table.add_process(Process("P23", "Eclipse", 234, "MID"))
+    process_table.add_process(Process("P93", "Chrome", 189, "High"))
+    process_table.add_process(Process("P42", "JDK", 9, "High"))
+    process_table.add_process(Process("P9", "CMD", 7, "High"))
+    process_table.add_process(Process("P87", "NotePad", 23, "Low"))
+
+    sorting_options = {
+        1: process_table.sort_by_p_id,
+        2: process_table.sort_by_start_time,
+        3: process_table.sort_by_priority
+    }
+
+    print("Sorting Options:")
     print("1. Sort by P_ID")
     print("2. Sort by Start Time")
     print("3. Sort by Priority")
-    print("4. Quit")
 
     choice = int(input("Enter your choice: "))
 
-    if choice == 1:
-        flight_table.bubble_sort('P_ID')
-    elif choice == 2:
-        flight_table.bubble_sort('Start Time')
-    elif choice == 3:
-        flight_table.bubble_sort('Priority')
-    elif choice == 4:
-        break
+    if choice in sorting_options:
+        sorting_options[choice]()
+        process_table.display_table()
     else:
-        print("Invalid choice. Please enter a valid option.")
+        print("Invalid choice!")
 
-    flight_table.print_table()
+if _name_ == "_main_":
+    main()
